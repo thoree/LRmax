@@ -1,13 +1,17 @@
 Package: LRmax
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Grandmother example
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Author: Thore Egeland
+Maintainer: Thore Egeland <Thore.Egeland@nmbu.no>
+Description: Simulates conditionally (on individuals 1 and 3) and unconditionally
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
 URL: https://github.com/thoree/LRmax
 BugReports: https://github.com/thoree/LRmax/issues
+Depends: 
+    pedtools (>= 2.4.0),
+    R (>= 4.1.0),
+    forrel (>= 1.5.2)
+RoxygenNote: 7.2.3
