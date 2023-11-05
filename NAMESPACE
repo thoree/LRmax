@@ -3,3 +3,4 @@
 export(LRmaxTest)
 export(gmExample)
 export(gmPedigrees)
+export(simPedigree)

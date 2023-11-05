@@ -11,30 +11,16 @@
 #'
 #' @examples
 #' peds = gmPedigrees(plot = F)
-#' Set1 <- c(
-#'   "CSF1PO", "D2S1338", "D3S1358", "D5S818", "D7S820",
-#'   "D8S1179", "D13S317", "D16S539", "D18S51", "D19S433", "D21S11", "FGA",
-#'   "TH01", "TPOX", "VWA"
-#' )
-#' db <- forrel::NorwegianFrequencies[Set1]
-#' mut = T
-#'
-#' # Simulate once from Ped truePed
-#' nsim = 1
-#' truePed = 1
-#' peds[[truePed]] <- setMarkers(peds[[truePed]], locusAttributes = db)
-#' if (mut) peds[[truePed]] <- setMutmod(peds[[truePed]], model = "proportional", rate = 0.001)
-#' sim = profileSim(peds[[truePed]], N = 1, ids = c("1", "2", "3"), seed = 1729)
-#' pedigrees = peds
-#' LRmaxTest(peds, sim, nsim = nsim, truePed = truePed)
-#'
+#' truePed  = 2
 #' nsim = 2
+#' conditional = T
+#' peds[[truePed]] = setMarkers(peds[[truePed]],
+#'                   locusAttributes = NorwegianFrequencies[1:5])
+#' peds[[truePed]] = setMutmod(peds[[truePed]], model = "proportional", rate = 0.001)
+#' sim = simPedigree(peds[[truePed]], idTarget ="2", idReferences = c("1", "3"),
+#'                   nsim = nsim, seed = 1729, conditional = conditional)
 #'
-#' peds[[truePed]] <- setMarkers(peds[[truePed]], locusAttributes = db)
-#' if (mut) peds[[truePed]] <- setMutmod(peds[[truePed]], model = "proportional", rate = 0.001)
-#' sim = profileSim(peds[[truePed]], N = nsim, ids = c("1", "2", "3"), seed = 1729)
-#' #pedigrees = peds
-#' LRmaxTest(peds, sim, nsim = nsim)
+#' LRmaxTest(peds, sim, nsim = nsim, truePed = truePed)
 #'
 #' @export
 
@@ -47,12 +33,9 @@ LRmaxTest <- function(pedigrees, sim, nsim = NULL, truePed = NULL) {
   if(nsim == 1){
     pedigrees[[truePed]] = transferMarkers(sim, pedigrees[[truePed]])
     lrs = kinshipLR(pedigrees, ref = npeds, source = truePed)$LRtotal
-    cn = c(names(lrs), "Z")
-    lrs = as.double(lrs)
-    Z = max(lrs[-npeds])
-    res[1, ] = c(lrs, Z)
-    dimnames(res) = list("obs", cn)
-    res = data.frame(res)
+    lrs2 = as.double(lrs)
+    Z = max(lrs2[-npeds])
+    res[1, ] = c(lrs2, Z)
   } else {
     for (i in 1:nsim){
       pedigrees[[truePed]] = transferMarkers(sim[[i]], pedigrees[[truePed]])
@@ -61,10 +44,9 @@ LRmaxTest <- function(pedigrees, sim, nsim = NULL, truePed = NULL) {
       Z = max(lrs2[-npeds])
       res[i, ] = c(lrs2, Z)
     }
-    cn = c(names(lrs), "Z")
-    dimnames(res) = list(1:nsim, cn)
-    res = data.frame(res)
-   }
+  }
+  colnames(res) = c(names(lrs), "Z")
+  res = data.frame(res)
   res
 }
 

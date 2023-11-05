@@ -21,29 +21,15 @@ are calculated
 }
 \examples{
 peds = gmPedigrees(plot = F)
-Set1 <- c(
-  "CSF1PO", "D2S1338", "D3S1358", "D5S818", "D7S820",
-  "D8S1179", "D13S317", "D16S539", "D18S51", "D19S433", "D21S11", "FGA",
-  "TH01", "TPOX", "VWA"
-)
-db <- forrel::NorwegianFrequencies[Set1]
-mut = T
-
-# Simulate once from Ped truePed
-nsim = 1
-truePed = 1
-peds[[truePed]] <- setMarkers(peds[[truePed]], locusAttributes = db)
-if (mut) peds[[truePed]] <- setMutmod(peds[[truePed]], model = "proportional", rate = 0.001)
-sim = profileSim(peds[[truePed]], N = 1, ids = c("1", "2", "3"), seed = 1729)
-pedigrees = peds
-LRmaxTest(peds, sim, nsim = nsim, truePed = truePed)
-
+truePed  = 2
 nsim = 2
+conditional = T
+peds[[truePed]] = setMarkers(peds[[truePed]],
+                  locusAttributes = NorwegianFrequencies[1:5])
+peds[[truePed]] = setMutmod(peds[[truePed]], model = "proportional", rate = 0.001)
+sim = simPedigree(peds[[truePed]], idTarget ="2", idReferences = c("1", "3"),
+                  nsim = nsim, seed = 1729, conditional = conditional)
 
-peds[[truePed]] <- setMarkers(peds[[truePed]], locusAttributes = db)
-if (mut) peds[[truePed]] <- setMutmod(peds[[truePed]], model = "proportional", rate = 0.001)
-sim = profileSim(peds[[truePed]], N = nsim, ids = c("1", "2", "3"), seed = 1729)
-#pedigrees = peds
-LRmaxTest(peds, sim, nsim = nsim)
+LRmaxTest(peds, sim, nsim = nsim, truePed = truePed)
 
 }
