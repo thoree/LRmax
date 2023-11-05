@@ -30,42 +30,35 @@ Set1 <- c(
   "TH01", "TPOX", "VWA"
 )
 db <- forrel::NorwegianFrequencies[Set1]
-x <- swapSex(linearPed(2, sex = 1), 1, verbose = F)
-ped1 <- addSon(x, parents = c("3", "4"), id = "6")
-ped1 <- relabel(ped1, c("1", "EM1", "EM2", "EF1", "2", "3"))
-id <- c("1", "2", "3")
-x <- relabel(x, c(1, "EM1", "EM2", "EF2", "3"))
-ped2 <- addChildren(x, father = "EM2", id = "2", verbose = F)
-ped2 <- relabel(ped2, "EF1", "NN_1")
-ped2 <- relabel(ped2, c("2", "3"), c("3", "2"))
-x <- relabel(x, "EF1", "EF2")
-ped3 <- list(x, singleton("2", sex = 1))
-nsim <- 10 # Increase
-seed17 <- 17
-cond <- T # Change to F
+nsim = 2
+seed17 = 17
+cond = F
+mut = T#'
+
+# Generate pedigrees
+peds = gmPedigrees(plot = F)
 
 # Simulate from Ped1
-ped1 <- setMarkers(ped1, locusAttributes = db)
-if (TRUE) ped1 <- setMutmod(ped1, model = "proportional", rate = 0.001)
-peds <- list("Ped1" = ped1, "Ped2" = ped2, "Ped3" = ped3)
+peds[[1]] <- setMarkers(peds[[1]], locusAttributes = db)
+if(mut) peds[[1]] <- setMutmod(peds[[1]], model = "proportional", rate = 0.001)
 LR1 <- gmExample(
   pedigrees = peds, Nsim = nsim, seed = seed17,
   conditional = cond, simulateFrom = "Ped1"
 )
 log1Max <- log10(LR1[, 3])
+
 # Simulate from Ped2
-ped2 <- setMarkers(ped2, locusAttributes = db)
-if(TRUE) ped2 <- setMutmod(ped2, model = "proportional", rate = 0.001)
-peds <- list("Ped1" = ped1, "Ped2" = ped2, "Ped3" = ped3)
+peds[[2]] <- setMarkers(peds[[2]], locusAttributes = db)
+if(mut) peds[[2]] <- setMutmod(peds[[2]], model = "proportional", rate = 0.001)
 LR2 <- gmExample(
   pedigrees = peds, Nsim = nsim, seed = seed17,
   conditional = cond, simulateFrom = "Ped2"
 )
 log2Max <- log10(LR2[, 3])
+
 # Simulate from Ped3
-ped3 <- setMarkers(ped3, locusAttributes = db)
-if (TRUE) ped3 <- setMutmod(ped3, model = "proportional", rate = 0.001)
-peds <- list("Ped1" = ped1, "Ped2" = ped2, "Ped3" = ped3)
+peds[[3]] <- setMarkers(peds[[3]], locusAttributes = db)
+if (mut) peds[[3]] <- setMutmod(peds[[3]], model = "proportional", rate = 0.001)
 LR3 <- gmExample(
   pedigrees = peds, Nsim = nsim, seed = seed17,
   conditional = cond, simulateFrom = "Ped3"
