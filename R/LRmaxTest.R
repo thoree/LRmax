@@ -12,7 +12,7 @@
 #' @examples
 #' peds = gmPedigrees(plot = F)
 #' truePed  = 2
-#' nsim = 2
+#' nsim =2
 #' conditional = T
 #' peds[[truePed]] = setMarkers(peds[[truePed]],
 #'                   locusAttributes = NorwegianFrequencies[1:5])
@@ -33,18 +33,20 @@ LRmaxTest <- function(pedigrees, sim, nsim = NULL, truePed = NULL) {
   if(nsim == 1){
     pedigrees[[truePed]] = transferMarkers(sim, pedigrees[[truePed]])
     lrs = kinshipLR(pedigrees, ref = npeds, source = truePed)$LRtotal
-    lrs2 = as.double(lrs)
-    Z = max(lrs2[-npeds])
-    res[1, ] = c(lrs2, Z)
+    res[1, 1:npeds] = as.double(lrs)
   } else {
     for (i in 1:nsim){
       pedigrees[[truePed]] = transferMarkers(sim[[i]], pedigrees[[truePed]])
       lrs = kinshipLR(pedigrees, ref = npeds, source = truePed)$LRtotal
-      lrs2 = as.double(lrs)
-      Z = max(lrs2[-npeds])
-      res[i, ] = c(lrs2, Z)
+      res[i, 1:npeds] = as.double(lrs)
     }
   }
+  if(nsim == 1)
+    Z = max(res[1,1:(npeds-1)])
+  else
+    Z = apply(res[,1:(npeds-1)], 2, max)
+
+  res[, npeds+1] = Z
   colnames(res) = c(names(lrs), "Z")
   res = data.frame(res)
   res
