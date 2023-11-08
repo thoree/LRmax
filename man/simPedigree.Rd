@@ -31,7 +31,7 @@ Pedigree with simulations
 Unconditional or conditional simulation.
 }
 \examples{
-peds = gmPedigrees(plot = F)
+peds = examplePedigrees(plot = F)
 truePed = 3
 peds[[truePed]] <- setMarkers(peds[[truePed]],
              locusAttributes =  NorwegianFrequencies)
