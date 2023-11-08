@@ -33,38 +33,40 @@ db <- forrel::NorwegianFrequencies[Set1]
 nsim = 2
 seed17 = 17
 cond = F
-mut = T#'
+mut = T
 
 # Generate pedigrees
-peds = gmPedigrees(plot = F)
+peds = examplePedigrees(plot = F)
 
-# Simulate from Ped1
-peds[[1]] <- setMarkers(peds[[1]], locusAttributes = db)
-if(mut) peds[[1]] <- setMutmod(peds[[1]], model = "proportional", rate = 0.001)
+# Simulate from Ped0
+peds[["Ped0"]] <- setMarkers(peds[["Ped0"]], locusAttributes = db)
+if(mut) peds[["Ped0"]] <- setMutmod(peds[["Ped0"]], model = "proportional",
+rate = 0.001)
 LR1 <- gmExample(
   pedigrees = peds, Nsim = nsim, seed = seed17,
-  conditional = cond, simulateFrom = "Ped1"
+  conditional = cond, simulateFrom = "Ped0"
 )
 log1Max <- log10(LR1[, 3])
 
 # Simulate from Ped2
-peds[[2]] <- setMarkers(peds[[2]], locusAttributes = db)
-if(mut) peds[[2]] <- setMutmod(peds[[2]], model = "proportional", rate = 0.001)
+peds[["Ped1"]] <- setMarkers(peds[["Ped1"]], locusAttributes = db)
+if(mut) peds[["Ped1"]] <- setMutmod(peds[["Ped1"]], model = "proportional", rate = 0.001)
 LR2 <- gmExample(
   pedigrees = peds, Nsim = nsim, seed = seed17,
-  conditional = cond, simulateFrom = "Ped2"
+  conditional = cond, simulateFrom = "Ped1"
 )
 log2Max <- log10(LR2[, 3])
 
 # Simulate from Ped3
-peds[[3]] <- setMarkers(peds[[3]], locusAttributes = db)
-if (mut) peds[[3]] <- setMutmod(peds[[3]], model = "proportional", rate = 0.001)
+peds[["Ped2"]] <- setMarkers(peds[["Ped2"]], locusAttributes = db)
+if (mut) peds[["Ped2"]] <- setMutmod(peds[["Ped2"]], model = "proportional", rate = 0.001)
 LR3 <- gmExample(
   pedigrees = peds, Nsim = nsim, seed = seed17,
-  conditional = cond, simulateFrom = "Ped3"
+  conditional = cond, simulateFrom = "Ped2"
 )
 log3Max <- log10(LR3[, 3])
-boxplot(log1Max, log2Max, log3Max, names = c("Ped1", "Ped2", "Ped3"),  ylab = "log10(LRmax)")
-criticalValue = quantile(log3Max, probs = 0.95)
+boxplot(log1Max, log2Max, log3Max, names = c("Ped0", "Ped1", "Ped2"),
+         ylab = "log10(LRmax)")
+criticalValue = quantile(log1Max, probs = 0.95)
 abline(h = criticalValue)
 }

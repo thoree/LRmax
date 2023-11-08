@@ -13,7 +13,7 @@
 #' @return Pedigree with simulations
 #'
 #' @examples
-#' peds = gmPedigrees(plot = F)
+#' peds = examplePedigrees(plot = F)
 #' truePed = 3
 #' peds[[truePed]] <- setMarkers(peds[[truePed]],
 #'              locusAttributes =  NorwegianFrequencies)

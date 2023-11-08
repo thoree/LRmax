@@ -20,40 +20,42 @@
 #' nsim = 2
 #' seed17 = 17
 #' cond = F
-#' mut = T#'
+#' mut = T
 #'
 #' # Generate pedigrees
-#' peds = gmPedigrees(plot = F)
+#' peds = examplePedigrees(plot = F)
 #'
-#' # Simulate from Ped1
-#' peds[[1]] <- setMarkers(peds[[1]], locusAttributes = db)
-#' if(mut) peds[[1]] <- setMutmod(peds[[1]], model = "proportional", rate = 0.001)
+#' # Simulate from Ped0
+#' peds[["Ped0"]] <- setMarkers(peds[["Ped0"]], locusAttributes = db)
+#' if(mut) peds[["Ped0"]] <- setMutmod(peds[["Ped0"]], model = "proportional",
+#' rate = 0.001)
 #' LR1 <- gmExample(
 #'   pedigrees = peds, Nsim = nsim, seed = seed17,
-#'   conditional = cond, simulateFrom = "Ped1"
+#'   conditional = cond, simulateFrom = "Ped0"
 #' )
 #' log1Max <- log10(LR1[, 3])
 #'
 #' # Simulate from Ped2
-#' peds[[2]] <- setMarkers(peds[[2]], locusAttributes = db)
-#' if(mut) peds[[2]] <- setMutmod(peds[[2]], model = "proportional", rate = 0.001)
+#' peds[["Ped1"]] <- setMarkers(peds[["Ped1"]], locusAttributes = db)
+#' if(mut) peds[["Ped1"]] <- setMutmod(peds[["Ped1"]], model = "proportional", rate = 0.001)
 #' LR2 <- gmExample(
 #'   pedigrees = peds, Nsim = nsim, seed = seed17,
-#'   conditional = cond, simulateFrom = "Ped2"
+#'   conditional = cond, simulateFrom = "Ped1"
 #' )
 #' log2Max <- log10(LR2[, 3])
 #'
 #' # Simulate from Ped3
-#' peds[[3]] <- setMarkers(peds[[3]], locusAttributes = db)
-#' if (mut) peds[[3]] <- setMutmod(peds[[3]], model = "proportional", rate = 0.001)
+#' peds[["Ped2"]] <- setMarkers(peds[["Ped2"]], locusAttributes = db)
+#' if (mut) peds[["Ped2"]] <- setMutmod(peds[["Ped2"]], model = "proportional", rate = 0.001)
 #' LR3 <- gmExample(
 #'   pedigrees = peds, Nsim = nsim, seed = seed17,
-#'   conditional = cond, simulateFrom = "Ped3"
+#'   conditional = cond, simulateFrom = "Ped2"
 #' )
 #' log3Max <- log10(LR3[, 3])
 
-#' boxplot(log1Max, log2Max, log3Max, names = c("Ped1", "Ped2", "Ped3"),  ylab = "log10(LRmax)")
-#' criticalValue = quantile(log3Max, probs = 0.95)
+#' boxplot(log1Max, log2Max, log3Max, names = c("Ped0", "Ped1", "Ped2"),
+#'          ylab = "log10(LRmax)")
+#' criticalValue = quantile(log1Max, probs = 0.95)
 #' abline(h = criticalValue)
 #' @export
 
@@ -69,36 +71,36 @@ gmExample <- function(pedigrees, Nsim, seed, conditional = F, simulateFrom = "Pe
 
 
   LRs <- matrix(nrow = nsim, ncol = 3)
-  if (simulateFrom == "Ped1") {
+  if (simulateFrom == "Ped0") {
     for (i in 1:Nsim) {
       LRs[i, 1:2] <- as.double(kinshipLR(
-        "Ped1" = sim[[i]],
-        "Ped2" = pedigrees[[2]],
-        "Ped3" = pedigrees[[3]], ref = 3,
+        "Ped0" = sim[[i]],
+        "Ped1" = pedigrees[[2]],
+        "Ped2" = pedigrees[[3]], ref = 1,
         source = simulateFrom
-      )$LRtotal[1:2])
+      )$LRtotal[2:3])
+    }
+  } else if (simulateFrom == "Ped1") {
+    for (i in 1:Nsim) {
+      LRs[i, 1:2] <- as.double(kinshipLR(
+        "Ped0" = pedigrees[[1]],
+        "Ped1" = sim[[i]],
+        "Ped2" = pedigrees[[3]], ref = 1,
+        source = simulateFrom
+      )$LRtotal[2:3])
     }
   } else if (simulateFrom == "Ped2") {
     for (i in 1:Nsim) {
       LRs[i, 1:2] <- as.double(kinshipLR(
-        "Ped1" = pedigrees[[1]],
-        "Ped2" = sim[[i]],
-        "Ped3" = pedigrees[[3]], ref = 3,
+        "Ped0" = pedigrees[[1]],
+        "Ped1" = pedigrees[[2]],
+        "Ped2" = sim[[i]], ref = 1,
         source = simulateFrom
-      )$LRtotal[1:2])
-    }
-  } else if (simulateFrom == "Ped3") {
-    for (i in 1:Nsim) {
-      LRs[i, 1:2] <- as.double(kinshipLR(
-        "Ped1" = pedigrees[[1]],
-        "Ped2" = pedigrees[[2]],
-        "Ped3" = sim[[i]], ref = 3,
-        source = simulateFrom
-      )$LRtotal[1:2])
+      )$LRtotal[2:3])
     }
   }
   LRmax <- pmax(LRs[, 1], LRs[, 2])
-  res <- data.frame(LR.1.3 = LRs[, 1], LR.2.3 = LRs[, 2], LRmax = LRmax)
+  res <- data.frame(LR.1.0 = LRs[, 2], LR.2.0 = LRs[, 3], Z = LRmax)
   res
 }
 
