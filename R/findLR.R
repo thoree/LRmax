@@ -1,11 +1,11 @@
 #' Finds LRs and the maximum
 #'
-#' n named pedigrees are given, one with marker data. The LRs comparing
+#' n named pedigrees are given and simulated marker data. The LRs comparing
 #' 1 to n,..., (n-1) to n and the maximum Z = max(LR.1.n, ..., LR.n-1.n)
 #' are calculated
 #'
 #' @param pedigrees a list of pedigrees
-#' @param sim pedigree with simulatd marker data
+#' @param sim pedigree with simulated marker data
 #' @param truePed index or name of pedigree with marker data
 #' @param ref index or name of pedigree in the numerator of LR
 #'
@@ -34,7 +34,7 @@ findLR = function(pedigrees, sim, truePed = NULL, ref = 1) {
   nsim = length(sim)
   # Convert ref to integer if necessary
   if(!is.integer(ref))
-    ref = (1:npeds)[names(peds) == ref]
+    ref = (1:npeds)[names(pedigrees) == ref]
 
   if(is.null(truePed))
     truePed = npeds

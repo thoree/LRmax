@@ -9,7 +9,7 @@ findLR(pedigrees, sim, truePed = NULL, ref = 1)
 \arguments{
 \item{pedigrees}{a list of pedigrees}
 
-\item{sim}{pedigree with simulatd marker data}
+\item{sim}{pedigree with simulated marker data}
 
 \item{truePed}{index or name of pedigree with marker data}
 
@@ -20,7 +20,7 @@ A data frame with LRs, the max and log likelihood of the first pedigree,
 the reference and optionally a plot.
 }
 \description{
-n named pedigrees are given, one with marker data. The LRs comparing
+n named pedigrees are given and simulated marker data. The LRs comparing
 1 to n,..., (n-1) to n and the maximum Z = max(LR.1.n, ..., LR.n-1.n)
 are calculated
 }
